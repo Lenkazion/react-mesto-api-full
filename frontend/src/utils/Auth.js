@@ -1,4 +1,4 @@
-export const URL = 'https://auth.nomoreparties.co';
+export const URL = 'https://api.lenkazion.nomoredomains.work';
 
 const handleResponse = (res) => {
   if (res.ok) {

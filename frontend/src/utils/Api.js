@@ -1,7 +1,6 @@
 class Api {
-    constructor({ baseUrl, headers }) {
+    constructor(baseUrl) {
       this._baseUrl = baseUrl;
-      this._headers = headers;
     }
   
     _handleResponse(res) {
@@ -11,29 +10,40 @@ class Api {
       return Promise.reject(`Ошибка: ${res.status}`);
     };
   
-    getCards() {
+    getCards(token) {
       return fetch(`${this._baseUrl}cards`, {
-        headers: this._headers
+        method: 'GET',
+         headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+         }
       })
         .then(this._handleResponse);
     }
   
-    getUserInfo() {
+    getUserInfo(token) {
       return fetch(`${this._baseUrl}users/me`, {
-        headers: this._headers
+        method: 'GET',
+         headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+         }
       })
         .then(this._handleResponse);
     }
   
-    getAllData() {
-      return Promise.all([this.getCards(), this.getUserInfo()])
+    getAllData(token) {
+      return Promise.all([this.getCards(token), this.getUserInfo(token)])
     }
   
-    setCard(data) {
+    setCard(data, token) {
       return fetch(`${this._baseUrl}cards`, {
         method: 'POST',
-        headers: this._headers,
-        body: JSON.stringify({
+         headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+         },
+          body: JSON.stringify({
           name: data.name,
           link: data.link,
         })
@@ -41,10 +51,13 @@ class Api {
         .then(this._handleResponse);
     }
   
-    setUserInfo(data) {
+    setUserInfo(data, token) {
       return fetch(`${this._baseUrl}users/me`, {
         method: 'PATCH',
-        headers: this._headers,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+       },
         body: JSON.stringify({
           name: data.name,
           about: data.about,
@@ -53,39 +66,51 @@ class Api {
         .then(this._handleResponse);
     }
   
-    setAvatar(data) {
+    setAvatar(data, token) {
       return fetch(`${this._baseUrl}users/me/avatar`, {
         method: 'PATCH',
-        headers: this._headers,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+       },
         body: JSON.stringify(data)
       })
         .then(this._handleResponse);
     }
   
-    setLike(data) {
+    setLike(data, token) {
       return fetch(`${this._baseUrl}cards/likes/${data}`, {
         method: 'PUT',
-        headers: this._headers,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+       },
       })
         .then(this._handleResponse);
     }
     
-    changeCardLikeStatus(data, isLiked) {
-      return isLiked ? this.setDislike(data) : this.setLike(data);
+    changeCardLikeStatus(data, isLiked, token) {
+      return isLiked ? this.setDislike(data, token) : this.setLike(data, token);
     }
   
-    setDislike(data) {
+    setDislike(data, token) {
       return fetch(`${this._baseUrl}cards/likes/${data}`, {
         method: 'DELETE',
-        headers: this._headers,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+       },
       })
         .then(this._handleResponse);
     }
   
-    setDelete(data) {
+    setDelete(data, token) {
       return fetch(`${this._baseUrl}cards/${data}`, {
         method: 'DELETE',
-        headers: this._headers,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+       },
       })
         .then(this._handleResponse);
   
@@ -93,11 +118,7 @@ class Api {
   }
 
   const api = new Api({
-    baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-30/',
-    headers: {
-      authorization: 'd3a63f01-1045-4e1e-b727-d3760ac2c2e8',
-      'Content-Type': 'application/json',
-    },
+    baseUrl: 'https://api.lenkazion.nomoredomains.work/',
   });
 
 export default api;
