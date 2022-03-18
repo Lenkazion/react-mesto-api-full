@@ -43,8 +43,18 @@ function App() {
   }, [history, loggedIn]);
 
   React.useEffect(() => {
-    tokenCheck();
-  }, []);
+    api
+      .getAllData()
+      .then((res) => {
+        const [cards, userInfo] = res;
+
+        setCards(cards.cards.reverse());
+        setCurrentUser(userInfo);
+        setUserData({ email: userInfo.email });
+        setLoggedIn(true);
+      })
+      .catch((err) => console.log(err))
+  }, [loggedIn]);
 
   React.useEffect(() => {
     api.getUserInfo()
@@ -70,9 +80,9 @@ function App() {
     isMenuOpen ? setIsMenuOpen(false) : setIsMenuOpen(true);
   };
   
-  const handleRegister = (email, password) => {
+  const handleRegister = (name, about, avatar, email, password) => {
     auth
-      .register(email, password)
+      .register(name, about, avatar, email, password)
       .then((res) => {
         setIsDataSet(true);
         history.push('/sign-in');
@@ -106,28 +116,26 @@ function App() {
           history.push('/');
         }
       })
-      .catch((err) => console.log(err));
+      .catch(() => {
+        setInfoToolTipData({
+          icon: false,
+          title: 'Что-то пошло не так! Попробуйте ещё раз.',
+        });
+        handleInfoToolTip();
+      });
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    setUserData({ email: '' });
-    setLoggedIn(false);
-  };
-
-  const tokenCheck = () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      auth
-        .getContent(token)
-        .then((res) => {
-          if (res) {
-            setUserData({ email: res.data.email });
-            setLoggedIn(true);
-          }
-        })
-        .catch((err) => console.log(err));
-    }
+    auth
+      .logout()
+      .then(() => {
+        setUserData({ email: '' });
+        setLoggedIn(false);
+        history.push('/sign-in');
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const handleUpdateUser = (user) => {

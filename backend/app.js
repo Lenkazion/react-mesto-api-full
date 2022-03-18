@@ -1,7 +1,8 @@
+require('dotenv').config();
+
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const { errors } = require('celebrate');
 const { celebrate, Joi } = require('celebrate');
@@ -13,17 +14,13 @@ const routerUser = require('./routes/users');
 const routerCards = require('./routes/cards');
 const NotFoundError = require('./errors/NotFoundError');
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3001 } = process.env;
 const app = express();
 
-app.use(cors({
-  origin: 'https://lenkazion.nomoredomains.work',
-  credentials: true,
-}));
+app.use(cors());
 
 app.use(express.json());
 app.use(bodyParser.json());
-app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestLogger);
 

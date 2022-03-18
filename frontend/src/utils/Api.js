@@ -1,6 +1,7 @@
 class Api {
-    constructor(baseUrl) {
+    constructor({baseUrl, headers}) {
       this._baseUrl = baseUrl;
+      this._headers = headers;
     }
   
     _handleResponse(res) {
@@ -10,39 +11,28 @@ class Api {
       return Promise.reject(`Ошибка: ${res.status}`);
     };
   
-    getCards(token) {
+    getCards() {
       return fetch(`${this._baseUrl}cards`, {
-        method: 'GET',
-         headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-         }
+        headers: this._headers,
       })
         .then(this._handleResponse);
     }
   
-    getUserInfo(token) {
+    getUserInfo() {
       return fetch(`${this._baseUrl}users/me`, {
-        method: 'GET',
-         headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-         }
+        headers: this._headers,
       })
         .then(this._handleResponse);
     }
   
-    getAllData(token) {
-      return Promise.all([this.getCards(token), this.getUserInfo(token)])
+    getAllData() {
+      return Promise.all([this.getCards(), this.getUserInfo()])
     }
   
-    setCard(data, token) {
+    setCard(data) {
       return fetch(`${this._baseUrl}cards`, {
         method: 'POST',
-         headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-         },
+        headers: this._headers,
           body: JSON.stringify({
           name: data.name,
           link: data.link,
@@ -51,13 +41,10 @@ class Api {
         .then(this._handleResponse);
     }
   
-    setUserInfo(data, token) {
+    setUserInfo(data) {
       return fetch(`${this._baseUrl}users/me`, {
         method: 'PATCH',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-       },
+        headers: this._headers,
         body: JSON.stringify({
           name: data.name,
           about: data.about,
@@ -66,40 +53,31 @@ class Api {
         .then(this._handleResponse);
     }
   
-    setAvatar(data, token) {
+    setAvatar(data) {
       return fetch(`${this._baseUrl}users/me/avatar`, {
         method: 'PATCH',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-       },
+        headers: this._headers,
         body: JSON.stringify(data)
       })
         .then(this._handleResponse);
     }
   
-    setLike(data, token) {
+    setLike(data) {
       return fetch(`${this._baseUrl}cards/likes/${data}`, {
         method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-       },
+        headers: this._headers,
       })
         .then(this._handleResponse);
     }
     
-    changeCardLikeStatus(data, isLiked, token) {
-      return isLiked ? this.setDislike(data, token) : this.setLike(data, token);
+    changeCardLikeStatus(data, isLiked) {
+      return isLiked ? this.setDislike(data) : this.setLike(data);
     }
   
-    setDislike(data, token) {
+    setDislike(data) {
       return fetch(`${this._baseUrl}cards/likes/${data}`, {
         method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-       },
+        headers: this._headers,
       })
         .then(this._handleResponse);
     }
@@ -107,18 +85,18 @@ class Api {
     setDelete(data, token) {
       return fetch(`${this._baseUrl}cards/${data}`, {
         method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-       },
+        headers: this._headers,
       })
         .then(this._handleResponse);
   
     }
   }
 
-  const api = new Api({
-    baseUrl: 'https://api.lenkazion.nomoredomains.work/',
+  export const api = new Api({
+    //baseUrl: 'https://api.lenkazion.nomoredomains.work/',
+    baseUrl: 'http://localhost:3000',
+    headers: {
+      authorization: `Bearer ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json',
+    },
   });
-
-export default api;
