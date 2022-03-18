@@ -1,5 +1,5 @@
-//export const URL = 'https://api.lenkazion.nomoredomains.work';
-export const URL = 'http://localhost:3000';
+export const URL = 'https://api.lenkazion.nomoredomains.work';
+//export const URL = 'http://localhost:3000';
 
 const handleResponse = (res) => {
   if (res.ok) {
