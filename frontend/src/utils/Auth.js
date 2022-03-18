@@ -1,4 +1,4 @@
-// export const URL = 'https://api.lenkazion.nomoredomains.work';
+//export const URL = 'https://api.lenkazion.nomoredomains.work';
 export const URL = 'http://localhost:3000';
 
 const handleResponse = (res) => {
