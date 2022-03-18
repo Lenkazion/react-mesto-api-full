@@ -1,0 +1,13 @@
+.popup__notification {
+    font-size: 24px;
+    font-weight: 900;
+    line-height: 1.21;
+    color: #000;
+    margin: 0;
+}
+  
+@media screen and (max-width: 425px) {
+    .popup__notification {
+      font-size: 20px;
+    }
+}

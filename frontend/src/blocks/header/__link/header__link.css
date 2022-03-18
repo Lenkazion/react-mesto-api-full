@@ -1,0 +1,19 @@
+.header__link {
+    color: #a9a9a9;
+    text-align: end;
+    text-decoration: none;
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+  
+.header__link:hover {
+    color: #ffffff;
+}
+
+@media screen and (max-width: 560px) {
+    .header__link {
+      padding-right: 10px;
+    }
+}

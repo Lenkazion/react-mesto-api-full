@@ -1,0 +1,10 @@
+.profile__all-info {
+    display: flex;
+    
+}
+
+@media screen and (max-width: 600px) {
+    .profile__all-info {
+        display: block;
+    }
+}

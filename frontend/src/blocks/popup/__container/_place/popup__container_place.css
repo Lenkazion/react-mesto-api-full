@@ -1,0 +1,10 @@
+.popup__container_place {
+    position: relative;
+    max-width: unset;
+    width: unset;
+    background-color: transparent;
+    border-radius: unset;
+    box-sizing: border-box;
+    margin: 0 auto;
+    padding: 0;
+}

@@ -1,0 +1,23 @@
+.popup__close_notification {
+    background: transparent url(../../../../images/popup__close-icon.svg) no-repeat;
+    background-size: 100%;
+    background-position: center;
+    background-color: transparent;
+    border: none;
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    right: 665px;
+    top: 270px;
+    cursor: pointer;
+    transition: all 0.7s ease;
+}
+
+@media screen and (max-width: 425px) {
+    .popup__close_notification {
+        width: 40px;
+        height: 40px;
+        right: -5px;
+        top: 290px;
+    }
+}
