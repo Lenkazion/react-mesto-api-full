@@ -24,7 +24,7 @@ function Main(props) {
       {props.cards.map((card) => (
           <Card
             key={card._id}
-            cardId={card._id}
+            card={card}
             name={card.name}
             link={card.link}
             ownerId={card.owner._id}

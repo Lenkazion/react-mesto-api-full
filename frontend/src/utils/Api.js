@@ -82,7 +82,7 @@ class Api {
         .then(this._handleResponse);
     }
   
-    setDelete(data, token) {
+    setDelete(data) {
       return fetch(`${this._baseUrl}cards/${data}`, {
         method: 'DELETE',
         headers: this._headers,
@@ -94,7 +94,7 @@ class Api {
 
   const api = new Api({
     baseUrl: 'https://api.lenkazion.nomoredomains.work/',
-    //baseUrl: 'http://localhost:3000',
+    //baseUrl: 'http://localhost:3000/',
     headers: {
       authorization: `Bearer ${localStorage.getItem('token')}`,
       'Content-Type': 'application/json',

@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const cors = require('cors');
+// const cors = require('cors');
 const { errors } = require('celebrate');
 const { celebrate, Joi } = require('celebrate');
 const { login, createUser } = require('./controllers/users');
@@ -14,10 +14,30 @@ const routerUser = require('./routes/users');
 const routerCards = require('./routes/cards');
 const NotFoundError = require('./errors/NotFoundError');
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3001 } = process.env;
 const app = express();
 
-app.use(cors());
+const allowedDomains = [
+  'https://lenkazion.nomoredomains.work',
+  'http://lenkazion.nomoredomains.work',
+  'http://localhost:3000',
+];
+
+app.use((req, res, next) => {
+  const { origin } = req.headers;
+  if (allowedDomains.includes(origin)) {
+    res.header('Access-Control-Allow-Credentials', true);
+    res.header('Access-Control-Allow-Origin', origin);
+    const { method } = req;
+    const DEFAULT_ALLOWED_METHODS = 'GET,PUT,PATCH,POST,DELETE';
+    if (method === 'OPTIONS') {
+      const requestHeaders = req.headers['access-control-request-headers'];
+      res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
+      res.header('Access-Control-Allow-Headers', requestHeaders);
+    }
+  }
+  next();
+});
 
 app.use(express.json());
 app.use(bodyParser.json());

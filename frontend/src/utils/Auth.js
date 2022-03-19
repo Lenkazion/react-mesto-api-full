@@ -1,5 +1,5 @@
 export const URL = 'https://api.lenkazion.nomoredomains.work';
-//export const URL = 'http://localhost:3000';
+// export const URL = 'http://localhost:3000';
 
 const handleResponse = (res) => {
   if (res.ok) {
@@ -8,7 +8,7 @@ const handleResponse = (res) => {
   return Promise.reject(`Ошибка: ${res.status}`);
 };
 
-export const register = (email, password) => {
+export const register = ({email, password}) => {
   return fetch(`${URL}/signup`, {
     method: 'POST',
     headers: {
