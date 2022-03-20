@@ -118,7 +118,7 @@ class Api {
   }
 
   const api = new Api({
-    baseUrl: 'https://api.lenkazion.nomoredomains.work/',
+    baseUrl: 'https://api.lenkazion.nomoredomains.work',
     //baseUrl: 'http://localhost:3001',
   });
 
