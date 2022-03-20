@@ -31,9 +31,17 @@ function App() {
   const [isButtonText, setIsButtonText] = React.useState('')
   const [selectedCard, setSelectedCard] = React.useState({});
   const [deleteCard, setDeleteCard] = React.useState({});
-  const [currentUser, setCurrentUser] = React.useState({});
+  const [currentUser, setCurrentUser] = React.useState({
+  name: '',
+  about: '',
+  _id: '',});
   const [userData, setUserData] = React.useState({});
   const [cards, setCards] = React.useState([]);
+  const jwt = localStorage.getItem('jwt');
+
+  React.useEffect(() => {
+    tokenCheck('/');
+  }, []);
 
   const history = useHistory();
   React.useEffect(() => {
@@ -42,48 +50,51 @@ function App() {
     }
   }, [history, loggedIn]);
 
-  React.useEffect(() => {
-    api
-      .getAllData()
-      .then((res) => {
-        const [cards, userInfo] = res;
+  // React.useEffect(() => {
+  //   if (loggedIn) {
+  //   api
+  //     .getAllData(token)
+  //     .then(([user, cards]) => {
+  //       setCards(cards.cards.reverse());
+  //       setCurrentUser(user);
+  //       setUserData({ email: user.email });
+  //     })
+  //     .catch((err) => console.log(err))
+  //   }
+  // }, [loggedIn, token]);
 
-        setCards(cards.cards.reverse());
-        setCurrentUser(userInfo);
-        setUserData({ email: userInfo.email });
-        setLoggedIn(true);
-      })
-      .catch((err) => console.log(err))
-  }, [loggedIn]);
-
   React.useEffect(() => {
-    api.getUserInfo()
+    if (loggedIn) {
+    api.getUserInfo(jwt)
       .then(res => {
         setCurrentUser(res);
       })
       .catch((err) => {
         console.log(err);
-    })
-  }, []);
+      })
+    }
+  }, [loggedIn]);
 
   React.useEffect(() => {
-    api.getCards()
-      .then(data => {
-        setCards(data);
+    if (loggedIn) {
+    api.getCards(jwt)
+      .then(res => {
+        setCards(res);
       })
       .catch((err) => {
         console.log(err);
-    })
-  }, []);
+      })
+    }
+  }, [loggedIn]);
 
   const toggleMenu = () => {
     isMenuOpen ? setIsMenuOpen(false) : setIsMenuOpen(true);
   };
   
-  const handleRegister = (name, about, avatar, email, password) => {
+  const handleRegister = (email, password) => {
     auth
-      .register(name, about, avatar, email, password)
-      .then((res) => {
+      .register(email, password)
+      .then(() => {
         setIsDataSet(true);
         history.push('/sign-in');
         setInfoToolTipData({
@@ -109,7 +120,7 @@ function App() {
       .authorize(email, password)
       .then((res) => {
         if (res.token) {
-          localStorage.setItem('token', res.token);
+          localStorage.setItem('jwt', res.token);
           setUserData({ email: email });
           setLoggedIn(true);
           setIsMenuOpen(false);
@@ -126,22 +137,34 @@ function App() {
   };
 
   const handleLogout = () => {
-    auth
-      .logout()
-      .then(() => {
+        localStorage.removeItem('jwt');
         setUserData({ email: '' });
         setLoggedIn(false);
         history.push('/sign-in');
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   };
+
+  const tokenCheck = (path) => {
+    if (!loggedIn && localStorage.getItem('jwt')) {
+    const jwt = localStorage.getItem('jwt');
+      auth
+        .checkToken(jwt)
+        .then((res) => {
+        if (res) {
+          setUserData({ email: res.email });
+          setLoggedIn(true);
+          history.push(path);
+        }
+      })
+        .catch((err) => {
+          console.log(err);
+        });
+      }
+  }
 
   const handleUpdateUser = (user) => {
     setIsButtonText('Сохранение...')
     api
-      .setUserInfo(user)
+      .setUserInfo(user, jwt)
       .then((res) => {
         setCurrentUser(res);
         closeAllPopups();
@@ -154,9 +177,9 @@ function App() {
   const handleUpdateAvatar = (avatar) => {
     setIsButtonText('Сохранение...')
     api
-      .setAvatar(avatar)
+      .setAvatar(avatar, jwt)
       .then((res) => {
-        setCurrentUser(res);
+        setCurrentUser(res.data);
         closeAllPopups();
       })
       .catch((err) => {
@@ -167,10 +190,10 @@ function App() {
   const handleCardLike = (card) => {
     const isLiked = card.likes.some(i => i === currentUser._id);
     api
-      .changeCardLikeStatus(card.cardId, isLiked)
+      .changeCardLikeStatus(card.cardId, isLiked, jwt)
       .then((res) => {
         const { data } = res;
-        setCards((cards) => cards.map((c) => (c._id === card._id ? data : c)));
+        setCards((cards) => cards.map((c) => (c._id === card.cardId ? data : c)));
       })
       .catch((err) => {
         console.log(err);
@@ -180,9 +203,9 @@ function App() {
   const handleCardDelete = () => {
     setIsButtonText('Удаление...')
     api
-      .setDelete(deleteCard._id)
+      .setDelete(deleteCard.cardId, jwt)
       .then(() => {
-        setCards((state) => state.filter((c) => c._id !== deleteCard._id));
+        setCards((state) => state.filter((c) => c._id !== deleteCard.cardId));
         closeAllPopups();
     })
       .catch((err) => {
@@ -193,7 +216,7 @@ function App() {
   const handleAddPlaceSubmit = (card) => {
     setIsButtonText('Сохранение...')
     api
-      .setCard(card)
+      .setCard(card, jwt)
       .then((newCard) => {
         setCards((state) => [newCard, ...state]);
         closeAllPopups();

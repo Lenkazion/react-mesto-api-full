@@ -32,7 +32,7 @@ module.exports.getUser = (req, res, next) => {
 module.exports.getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .orFail(() => new NotFoundError('Пользователь с указанным ID не существует.'))
-    .then((user) => { res.status(200).send({ user }); })
+    .then((user) => { res.status(200).send(user); })
     .catch((err) => {
       if (err.message === 'NotFound') {
         next(new NotFoundError('Пользовател или карточка с переданным ID не найден.'));

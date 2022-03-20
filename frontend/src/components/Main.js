@@ -24,10 +24,10 @@ function Main(props) {
       {props.cards.map((card) => (
           <Card
             key={card._id}
-            card={card}
+            cardId={card._id}
             name={card.name}
             link={card.link}
-            ownerId={card.owner._id}
+            owner={card.owner}
             likes={card.likes}
             onCardClick={props.onCardClick}
             onCardLike={props.onCardLike}

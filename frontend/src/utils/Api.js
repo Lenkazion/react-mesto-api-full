@@ -1,7 +1,6 @@
 class Api {
-    constructor({baseUrl, headers}) {
-      this._baseUrl = baseUrl;
-      this._headers = headers;
+    constructor(config) {
+      this.baseUrl = config.baseUrl;
     }
   
     _handleResponse(res) {
@@ -11,28 +10,39 @@ class Api {
       return Promise.reject(`Ошибка: ${res.status}`);
     };
   
-    getCards() {
-      return fetch(`${this._baseUrl}cards`, {
-        headers: this._headers,
+    getCards(token) {
+      return fetch(`${this.baseUrl}/cards`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+      }
       })
         .then(this._handleResponse);
     }
   
-    getUserInfo() {
-      return fetch(`${this._baseUrl}users/me`, {
-        headers: this._headers,
+    getUserInfo(token) {
+      return fetch(`${this.baseUrl}/users/me`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+      }
       })
         .then(this._handleResponse);
     }
   
-    getAllData() {
-      return Promise.all([this.getCards(), this.getUserInfo()])
+    getAllData(token) {
+      return Promise.all([this.getCards(token), this.getUserInfo(token)])
     }
   
-    setCard(data) {
-      return fetch(`${this._baseUrl}cards`, {
+    setCard(data, token) {
+      return fetch(`${this.baseUrl}/cards`, {
         method: 'POST',
-        headers: this._headers,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+      },
           body: JSON.stringify({
           name: data.name,
           link: data.link,
@@ -41,10 +51,13 @@ class Api {
         .then(this._handleResponse);
     }
   
-    setUserInfo(data) {
-      return fetch(`${this._baseUrl}users/me`, {
+    setUserInfo(data, token) {
+      return fetch(`${this.baseUrl}/users/me`, {
         method: 'PATCH',
-        headers: this._headers,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+      },
         body: JSON.stringify({
           name: data.name,
           about: data.about,
@@ -53,39 +66,51 @@ class Api {
         .then(this._handleResponse);
     }
   
-    setAvatar(data) {
-      return fetch(`${this._baseUrl}users/me/avatar`, {
+    setAvatar(data, token) {
+      return fetch(`${this.baseUrl}/users/me/avatar`, {
         method: 'PATCH',
-        headers: this._headers,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+      },
         body: JSON.stringify(data)
       })
         .then(this._handleResponse);
     }
   
-    setLike(data) {
-      return fetch(`${this._baseUrl}cards/likes/${data}`, {
+    setLike(data, token) {
+      return fetch(`${this.baseUrl}/cards/${data}/likes`, {
         method: 'PUT',
-        headers: this._headers,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+      }
       })
         .then(this._handleResponse);
     }
     
-    changeCardLikeStatus(data, isLiked) {
-      return isLiked ? this.setDislike(data) : this.setLike(data);
+    changeCardLikeStatus(data, isLiked, token) {
+      return isLiked ? this.setDislike(data, token) : this.setLike(data, token);
     }
   
-    setDislike(data) {
-      return fetch(`${this._baseUrl}cards/likes/${data}`, {
+    setDislike(data, token) {
+      return fetch(`${this.baseUrl}/cards/${data}/likes`, {
         method: 'DELETE',
-        headers: this._headers,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+      }
       })
         .then(this._handleResponse);
     }
   
-    setDelete(data) {
-      return fetch(`${this._baseUrl}cards/${data}`, {
+    setDelete(data, token) {
+      return fetch(`${this.baseUrl}/cards/${data}`, {
         method: 'DELETE',
-        headers: this._headers,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+      }
       })
         .then(this._handleResponse);
   
@@ -93,12 +118,8 @@ class Api {
   }
 
   const api = new Api({
-    //baseUrl: 'https://api.lenkazion.nomoredomains.work/',
-    baseUrl: 'http://localhost:3000/',
-    headers: {
-      authorization: `Bearer ${localStorage.getItem('token')}`,
-      'Content-Type': 'application/json',
-    },
+    baseUrl: 'https://api.lenkazion.nomoredomains.work/',
+    //baseUrl: 'http://localhost:3001',
   });
 
   export default api;

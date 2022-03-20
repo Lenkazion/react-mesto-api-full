@@ -1,5 +1,5 @@
-//export const URL = 'https://api.lenkazion.nomoredomains.work';
-export const URL = 'http://localhost:3000';
+export const URL = 'https://api.lenkazion.nomoredomains.work';
+//export const URL = 'http://localhost:3001';
 
 const handleResponse = (res) => {
   if (res.ok) {
@@ -8,7 +8,7 @@ const handleResponse = (res) => {
   return Promise.reject(`Ошибка: ${res.status}`);
 };
 
-export const register = ({email, password}) => {
+export const register = (email, password) => {
   return fetch(`${URL}/signup`, {
     method: 'POST',
     headers: {
@@ -26,7 +26,8 @@ export const authorize = (email, password) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ email, password }),
-  }).then(handleResponse);
+  })
+  .then(handleResponse);
 };
 
 export const checkToken = (token) => {
@@ -39,14 +40,4 @@ export const checkToken = (token) => {
     }
   })
   .then(handleResponse)
-  .then(data => data)
 }
-
-export const logout = () => {
-  return fetch(`${URL}/logout`, {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-  }).then(handleResponse);
-};
