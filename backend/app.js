@@ -16,27 +16,6 @@ const NotFoundError = require('./errors/NotFoundError');
 const { PORT = 3001 } = process.env;
 const app = express();
 
-// const allowedDomains = [
-//   'https://lenkazion.nomoredomains.work',
-//   'http://lenkazion.nomoredomains.work',
-//   'http://localhost:3000',
-// ];
-
-// app.use((req, res, next) => {
-//   const { origin } = req.headers;
-//   if (allowedDomains.includes(origin)) {
-//     res.header('Access-Control-Allow-Credentials', true);
-//     res.header('Access-Control-Allow-Origin', origin);
-//     const { method } = req;
-//     const DEFAULT_ALLOWED_METHODS = 'GET,PUT,PATCH,POST,DELETE';
-//     if (method === 'OPTIONS') {
-//       const requestHeaders = req.headers['access-control-request-headers'];
-//       res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
-//       res.header('Access-Control-Allow-Headers', requestHeaders);
-//     }
-//   }
-//   next();
-// });
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
