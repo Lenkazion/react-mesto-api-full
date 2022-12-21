@@ -1,5 +1,1 @@
-# Mesto – Full Api Project
-Полноценный проект `Mesto`, включающий фронтенд и бэкенд части приложения со следующими возможностями: авторизации и регистрации пользователей, операции с карточками и пользователями.
-
-:round_pushpin: Домен сайта: https://lenkazion.nomoredomains.work/
-:round_pushpin: Публичный IP-адрес сервера: 84.252.140.165
+# Yandex Bootcamp Project: Mesto
